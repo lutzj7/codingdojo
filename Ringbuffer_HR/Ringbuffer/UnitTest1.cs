@@ -388,44 +388,4 @@ namespace ringbuffer
         }
     }
 
-    //public class Ringbuffer<T>
-    //{
-    //    public int Size { get; set; }
-
-    //    public int Count
-    //    {
-    //        get
-    //        {
-    //            return this._buffer.Count;
-    //        }
-    //    }
-
-    //    private Queue<T> _buffer;
-
-    //    public Ringbuffer(int size)
-    //    {
-    //        this.Size = size;
-    //        this._buffer = new Queue<T>();
-    //    }
-
-    //    public void Add(T obj)
-    //    {
-    //        if (this._buffer.Count == this.Size)
-    //        {
-    //            this._buffer.Dequeue();
-    //        }
-
-    //        this._buffer.Enqueue(obj);
-    //    }
-
-    //    public T Take()
-    //    {
-    //        if (this._buffer.Count == 0)
-    //        {
-    //            throw new InvalidOperationException();
-    //        }
-
-    //        return this._buffer.Dequeue();
-    //    }
-    //}
 }
