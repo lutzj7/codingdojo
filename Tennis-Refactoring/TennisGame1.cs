@@ -5,80 +5,85 @@ namespace Tennis
 {
     class TennisGame1 : ITennisGame
     {
-        private int m_score1 = 0;
-        private int m_score2 = 0;
-        private string player1Name;
-        private string player2Name;
+        private static readonly string[] ScoreNames = { "Love", "Fifteen", "Thirty", "Forty" };
+        private static readonly string[] TieNames = { "Love-All", "Fifteen-All", "Thirty-All", "Deuce" };
+
+        private int _score1 = 0;
+        private int _score2 = 0;
+        private readonly string _player1Name;
+        private readonly string _player2Name;
+
+        private bool IsTie { get { return _score1 == _score2; } }
+        private bool BothLowerForty { get { return _score1 < 4 && _score2 < 4; } }
 
         public TennisGame1(string player1Name, string player2Name)
         {
-            this.player1Name = player1Name;
-            this.player2Name = player2Name;
+            _player1Name = player1Name;
+            _player2Name = player2Name;
         }
 
         public void WonPoint(string playerName)
         {
-            if (playerName == "player1")
-                m_score1 += 1;
+            if (playerName == _player1Name)
+            {
+                _score1++;
+            }
+            else if (playerName == _player2Name)
+            {
+                _score2++;
+            }
             else
-                m_score2 += 1;
+            {
+                throw new ArgumentException("Argument not valid");
+            }
         }
 
         public string GetScore()
         {
             String score = "";
-            int tempScore = 0;
-            if (m_score1 == m_score2)
+            if (IsTie)
             {
-                switch (m_score1)
-                {
-                    case 0:
-                        score = "Love-All";
-                        break;
-                    case 1:
-                        score = "Fifteen-All";
-                        break;
-                    case 2:
-                        score = "Thirty-All";
-                        break;
-                    default:
-                        score = "Deuce";
-                        break;
+                score = GetScoreForTie();
+            }
+            else if (BothLowerForty)
+            {
+                score = string.Format("{0}-{1}",
+                    GetScoreForSinglePlayer(_score1),
+                    GetScoreForSinglePlayer(_score2));
+            }
+            else if (_score1 - _score2 >= 2)
+            {
+                score = string.Format("Win for {0}", _player1Name);
+            }
+            else if (_score2 - _score1 >= 2)
+            {
+                score = string.Format("Win for {0}", _player2Name);
+            }
+            else if (_score1 > _score2)
+            {
+                score = string.Format("Advantage {0}", _player1Name);
+            }
+            else if (_score2 > _score1)
+            {
+                score = string.Format("Advantage {0}", _player2Name);
+            }
 
-                }
-            }
-            else if (m_score1 >= 4 || m_score2 >= 4)
-            {
-                int minusResult = m_score1 - m_score2;
-                if (minusResult == 1) score = "Advantage player1";
-                else if (minusResult == -1) score = "Advantage player2";
-                else if (minusResult >= 2) score = "Win for player1";
-                else score = "Win for player2";
-            }
-            else
-            {
-                for (int i = 1; i < 3; i++)
-                {
-                    if (i == 1) tempScore = m_score1;
-                    else { score += "-"; tempScore = m_score2; }
-                    switch (tempScore)
-                    {
-                        case 0:
-                            score += "Love";
-                            break;
-                        case 1:
-                            score += "Fifteen";
-                            break;
-                        case 2:
-                            score += "Thirty";
-                            break;
-                        case 3:
-                            score += "Forty";
-                            break;
-                    }
-                }
-            }
             return score;
+        }
+
+        private static string GetScoreForSinglePlayer(int tempScore)
+        {
+            if (tempScore < 0 || tempScore >= 4)
+            {
+                throw new ArgumentException("Operation not supported");
+            }
+
+            return ScoreNames[tempScore];
+        }
+
+        private string GetScoreForTie()
+        {
+            return TieNames[Math.Min(_score1,3)];
         }
     }
 

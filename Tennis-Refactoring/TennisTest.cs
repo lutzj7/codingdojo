@@ -57,6 +57,14 @@ namespace Tennis
         }
 
         [Test]
+        public void PlayerNameAsGivenByConstructorIsTakenInCalculation()
+        {
+            TennisGame1 game = new TennisGame1("Boris Becker", "Steffi Graf");
+            game.WonPoint("Boris Becker");
+            Assert.AreEqual("Fifteen-Love", game.GetScore());
+        }
+
+        [Test]
         public void checkTennisGame2()
         {
             TennisGame2 game = new TennisGame2("player1", "player2");
