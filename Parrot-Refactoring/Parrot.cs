@@ -2,49 +2,60 @@
 
 namespace parrot
 {
-    public class Parrot
+    public abstract class Parrot
     {
-        readonly ParrotTypeEnum _type;
-        readonly int _numberOfCoconuts;
-        readonly double _voltage;
-        readonly bool _isNailed;
+        protected const double BaseSpeed = 12.0;
 
-        public Parrot(ParrotTypeEnum type, int numberOfCoconuts, double voltage, bool isNailed)
+        public abstract double GetSpeed();
+    }
+
+    public class EuropeanParrot : Parrot
+    {
+        public override double GetSpeed()
         {
-            _type = type;
+            return BaseSpeed;            
+        }
+    }
+
+    public class AfricanParrot : Parrot
+    {
+        readonly int _numberOfCoconuts;
+        private const double LoadFactor = 9.0;
+
+        public AfricanParrot(int numberOfCoconuts)
+        {
+            if (numberOfCoconuts < 0)
+                throw new ArgumentException();
             _numberOfCoconuts = numberOfCoconuts;
-            _voltage = voltage;
-            _isNailed = isNailed; 
         }
 
-        public double GetSpeed()
+        public override double GetSpeed()
         {
-            switch (_type)
-            {
-                case ParrotTypeEnum.EUROPEAN:
-                    return GetBaseSpeed();
-                case ParrotTypeEnum.AFRICAN:
-                    return Math.Max(0, GetBaseSpeed() - GetLoadFactor() * _numberOfCoconuts);
-                case ParrotTypeEnum.NORWEGIAN_BLUE:
-                    return (_isNailed) ? 0 : GetBaseSpeed(_voltage);
-            }
+            return Math.Max(0, BaseSpeed - LoadFactor * _numberOfCoconuts); 
+        }
+    }
 
-            throw new Exception("Should be unreachable");
+    public class NorwegianBlueParrot : Parrot
+    {
+        readonly bool _isNailed;
+        readonly double _voltage;
+        private const double MaxParrotSpeedUnderVoltage = 24.0;
+        public override double GetSpeed()
+        {
+            return _isNailed ? 0 : GetBaseSpeed(_voltage);
         }
 
         private double GetBaseSpeed(double voltage)
         {
-            return Math.Min(24.0, voltage * GetBaseSpeed());
+            return Math.Min(MaxParrotSpeedUnderVoltage, voltage * BaseSpeed);
         }
 
-        private double GetLoadFactor()
+        public NorwegianBlueParrot(double voltage, bool isNailed)
         {
-            return 9.0;
-        }
-
-        private double GetBaseSpeed()
-        {
-            return 12.0;
+            if (double.IsNaN((voltage)) || voltage < 0)
+                throw new ArgumentException();
+            _voltage = voltage;
+            _isNailed = isNailed; 
         }
     }
 }
