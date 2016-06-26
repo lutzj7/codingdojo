@@ -15,11 +15,8 @@ namespace ShoppingCartService.Tests
         public void TestMethod1()
         {
             const int productCount = 5;
-
-            var inventoryPersistency = new InventoryPersistencyFake();
-            inventoryPersistency.TryAddProduct(new Product(ProductId, ProductName, ProductPrice));
-
-            ShoppingCartService shoppingCartService = new ShoppingCartService(inventoryPersistency, new ShoppingCartPersistency());
+            
+            ShoppingCartService shoppingCartService = CreateShoppingCartService();
 
             var shoppingCartId = shoppingCartService.CreateCart();
             shoppingCartService.AddToCart(shoppingCartId, ProductId, productCount);
@@ -28,5 +25,25 @@ namespace ShoppingCartService.Tests
 
             Assert.AreEqual(ProductPrice * productCount, response.Total);
         }
+
+        private static ShoppingCartService CreateShoppingCartService()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterModule<ShoppingCartServiceModule>();
+
+            builder.Register((ctx) => {
+                var inventoryPersistencyFake = new InventoryPersistencyFake();
+                inventoryPersistencyFake.TryAddProduct(new Product(ProductId, ProductName, ProductPrice));
+                return inventoryPersistencyFake;
+            })
+                .As<IInventoryPersistency>();
+
+            var container = builder.Build();
+
+            var shoppingCartService = container.Resolve<ShoppingCartService>();
+            
+            return shoppingCartService;
+        }
     }
+
 }
