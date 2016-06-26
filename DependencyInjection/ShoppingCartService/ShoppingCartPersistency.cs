@@ -2,29 +2,11 @@
 
 namespace ShoppingCartService
 {
-    public class ShoppingCartPersistency
+    public class ShoppingCartPersistency : IShoppingCartPersistency
     {
         private Dictionary<long, ShoppingCart> _shoppingCarts = new Dictionary<long, ShoppingCart>();
         private long _lastShoppingCardId = 10000;
-
-        private ShoppingCartPersistency()
-        {
-        }
-
-        private static ShoppingCartPersistency _instance;
-
-        public static ShoppingCartPersistency Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new ShoppingCartPersistency();
-                }
-                return _instance;
-            }
-        }
-
+        
         public ShoppingCart GetShoppingCartById(long id)
         {
             return _shoppingCarts[id];

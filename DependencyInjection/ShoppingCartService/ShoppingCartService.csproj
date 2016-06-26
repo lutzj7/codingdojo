@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IInventoryPersistency.cs" />
     <Compile Include="InventoryPersistency.cs" />
+    <Compile Include="IShoppingCartPersistency.cs" />
     <Compile Include="LineItem.cs" />
     <Compile Include="LineItemTO.cs" />
     <Compile Include="Product.cs" />

@@ -4,27 +4,37 @@ namespace ShoppingCartService
 {
     public class ShoppingCartService
     {
+        private IInventoryPersistency _inventoryPersistency;
+        private IShoppingCartPersistency _shoppingCartPersistency;
+
+        public ShoppingCartService(IInventoryPersistency inventoryPersistency, IShoppingCartPersistency shoppingCartPersistency)
+        {
+            _inventoryPersistency = inventoryPersistency;
+            _shoppingCartPersistency = shoppingCartPersistency;
+        }
+
         public void AddToCart(long shoppingCardId, string productId, int count)
         {
-            var sc = ShoppingCartPersistency.Instance.GetShoppingCartById(shoppingCardId);
-            var p = InventoryPersistency.Instance.GetProductById(productId);
-            sc.LineItems.Add(new LineItem(p, count));
+            var shoppingCart = _shoppingCartPersistency.GetShoppingCartById(shoppingCardId);
+            Product product = _inventoryPersistency.GetProductById(productId);
+
+            shoppingCart.LineItems.Add(new LineItem(product, count));
         }
 
         public long CreateCart()
         {
-            var sc = ShoppingCartPersistency.Instance.CreateNewShoppingCart();
-            return sc.Id;
+            var shoppingCart = _shoppingCartPersistency.CreateNewShoppingCart();
+            return shoppingCart.Id;
         }
 
 
         public ShoppingCartTO GetShoppingCart(long shoppingCardId)
         {
-            var sc = ShoppingCartPersistency.Instance.GetShoppingCartById(shoppingCardId);
+            var shoppingCart = _shoppingCartPersistency.GetShoppingCartById(shoppingCardId);
 
             var response = new ShoppingCartTO();
 
-            response.LineItems = sc.LineItems.Select(p => new LineItemTO() {
+            response.LineItems = shoppingCart.LineItems.Select(p => new LineItemTO() {
                 ProductId = p.Product.Id,
                 ProductName = p.Product.Name,
                 Count = p.Count,
@@ -32,7 +42,7 @@ namespace ShoppingCartService
                 TotalPrice = p.SumCt
             }).ToList();
 
-            response.Total = sc.LineItems.Sum(p => p.SumCt);
+            response.Total = shoppingCart.LineItems.Sum(p => p.SumCt);
 
             return response;
         }
