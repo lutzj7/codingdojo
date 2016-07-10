@@ -8,6 +8,12 @@ namespace Bowling
 {
     public class Game
     {
+        private const int MINPINS = 0;
+        private const int MAXPINS = 10;
+
+        private const int SECOND = 2;
+        private const int THIRD = 3;
+
         private List<Frame> _frames;
 
         public Game()
@@ -17,7 +23,7 @@ namespace Bowling
 
         public void AddRoll(int pins)
         {
-            if (pins < 0 || pins > 10)
+            if (pins < MINPINS || pins > MAXPINS)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -37,19 +43,25 @@ namespace Bowling
                 this._frames.Add(new Frame());
                 last = this._frames.Last();
             }
+            
+            last.PinsRolled.Add(pins);
 
-            if (this._frames.Count >= 2)
+            this.PinsImputeByStrikeOrSpare(pins, SECOND);
+            this.PinsImputeByStrikeOrSpare(pins, THIRD);
+        }
+
+        private void PinsImputeByStrikeOrSpare(int pins, int frameCount)
+        {
+            if (this._frames.Count >= frameCount)
             {
-                var secondlast = this._frames[this._frames.Count - 2];
+                var frame = this._frames[this._frames.Count - frameCount];
 
-                if (secondlast.PinsRolled.Count < 3 &&
-                    (secondlast.IsStrike || secondlast.IsSpare))
+                if (frame.PinsRolled.Count < 3 &&
+                    (frame.IsStrike || frame.IsSpare))
                 {
-                    secondlast.PinsRolled.Add(pins);
+                    frame.PinsRolled.Add(pins);
                 }
             }
-
-            last.PinsRolled.Add(pins);
         }
 
         public List<Frame> Frames
