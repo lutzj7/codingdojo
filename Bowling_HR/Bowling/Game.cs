@@ -84,7 +84,26 @@ namespace Bowling
         {
             get
             {
-                return this._frames.Count == 10 && this._frames.Last().PinsRolled.Count >= 2;
+                bool result = false;
+
+                if (this._frames.Count == 10)
+                {
+                    Frame lastFrame = this._frames.Last();
+
+                    if (lastFrame.IsStrike || lastFrame.IsSpare)
+                    {
+                        if (lastFrame.PinsRolled.Count == 3)
+                        {
+                            result = true;
+                        }
+                    }
+                    else if (lastFrame.PinsRolled.Count == 2)
+                    {
+                        result = true;
+                    }
+                }
+
+                return result;
             }
         }
     }

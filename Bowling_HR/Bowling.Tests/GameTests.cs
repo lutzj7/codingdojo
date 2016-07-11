@@ -111,6 +111,49 @@ namespace Bowling.Tests
             Assert.IsTrue(game.Over);
             Assert.AreEqual(300, game.TotalScore);
         }
+
+        [TestMethod]
+        public void LastFrameSpare()
+        {
+            var game = new Game();
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+
+            game.AddRoll(7);
+            game.AddRoll(3);
+            Assert.IsFalse(game.Over);
+            game.AddRoll(10);
+
+            Assert.IsTrue(game.Over);
+            Assert.AreEqual(277, game.TotalScore);
+        }
+
+        [TestMethod]
+        public void LastFrameNormal()
+        {
+            var game = new Game();
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+            game.AddRoll(10);
+
+            game.AddRoll(7);
+            game.AddRoll(2);
+            Assert.IsTrue(game.Over);
+            Assert.AreEqual(265, game.TotalScore);
+        }
     }
 }
 namespace Bowling.Tests
